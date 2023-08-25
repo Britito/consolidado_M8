@@ -1,61 +1,123 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+
+const express = require('express');
+
+const path = require('path');
+
+const cookieParser = require('cookie-parser');
+
+const logger = require('morgan');
+
 const dotenv = require('dotenv')
+
 const exphbs = require('express-handlebars')
-const {engine} = require('express-handlebars')
+
+const { engine } = require('express-handlebars')
+
+
 
 dotenv.config()
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var authRouter = require('./routes/auth');
 
-var app = express();
+
+const indexRouter = require('./routes/index');
+
+const authRouter = require('./routes/auth');
+
+const userRouter = require('./routes/users.routes');
+
+const bootcampRouter = require('./routes/bootcamp.routes')
+
+const app = express();
+
+
 
 // view engine setup
+
 const handlebars = exphbs.create({
+
   layoutsDir: path.join(__dirname, 'views'),
+
   partialsDir: path.join(__dirname, 'views/partials')
+
 });
-app.engine(".hbs", engine({extname: '.hbs'}));
+
+app.engine(".hbs", engine({ extname: '.hbs' }));
+
 app.set("view engine", "hbs");
+
 app.set('views', path.join(__dirname, 'views'));
 
 
+
+
+
 app.use(logger('dev'));
+
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: false }));
+
 app.use(cookieParser());
+
 // exponemos los archivos estáticos
+
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
+
 app.use(express.static(path.join(__dirname, 'node_modules/axios/dist')));
+
 app.use(express.static(path.join(__dirname, 'node_modules/toastr/build')));
+
 app.use(express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 
 
+
+
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/api/auth', authRouter);
+
+app.use('/api', authRouter);
+
+app.use('/', userRouter);
+
+app.use('/',bootcampRouter);
+
+
+
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+
+app.use(function (req, res, next) {
+
   next(createError(404));
+
 });
+
+
 
 // error handler
-app.use(function(err, req, res, next) {
+
+app.use(function (err, req, res, next) {
+
   // set locals, only providing error in development
+
   res.locals.message = err.message;
+
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+
+
   // render the error page
+
   res.status(err.status || 500);
+
   res.render('error');
+
 });
+
+
 
 module.exports = app;

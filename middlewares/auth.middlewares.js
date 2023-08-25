@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken')
-
 const llave_secreta = 'topsecret'
 
-
+//para verificar que el usuario está logeado por los headers
 function auth_required (req, res, next) {
   // quiero que esta ruta sólo sea para usuarios logueados
   // Si puedo abrir el token, entonces asumimos que el usuario SI está logueado
@@ -22,7 +21,7 @@ function auth_required (req, res, next) {
   if (now > decoded.exp) {
     console.log({now}, {exp: decoded.exp})
     return res.status(401).json({
-      err: 'Tu token expiró'
+      error : 'Token expirado'
     })
   }
   // 3. Guardamos el usuario en el objeto request

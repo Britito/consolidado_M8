@@ -1,6 +1,8 @@
 const Sequelize = require('sequelize')
+const dotenv = require('dotenv').config()
 
-// 1. Creamos la base de datos
+
+// 1. Creamos la base de datos con .env
 const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
   host: 'localhost',
   dialect: 'postgres',
